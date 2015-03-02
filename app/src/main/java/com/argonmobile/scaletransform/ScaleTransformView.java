@@ -96,8 +96,7 @@ public class ScaleTransformView extends FrameLayout {
     }
 
     private boolean checkGestureTrigger(MotionEvent ev) {
-        if (MotionEventCompat.getPointerCount(ev) >= 4 && MotionEventCompat.getPointerCount(ev) <= 6) {
-            mIsTrigging = true;
+        if (MotionEventCompat.getPointerCount(ev) >= 2 && MotionEventCompat.getPointerCount(ev) <= 6) {
             return true;
         } else {
             return false;
@@ -108,11 +107,13 @@ public class ScaleTransformView extends FrameLayout {
     public boolean dispatchTouchEvent (MotionEvent ev) {
 
         if (checkGestureTrigger(ev)) {
-            mScaleGestureDetector.onTouchEvent(ev);
+            mIsTrigging = true;
         } else {
-            super.dispatchTouchEvent(ev);
+            mIsTrigging = false;
         }
-        return true;
+
+        boolean retValue = mScaleGestureDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev) || retValue;
     }
 
     @Override
@@ -227,18 +228,28 @@ public class ScaleTransformView extends FrameLayout {
      */
     private final ScaleGestureDetector.OnScaleGestureListener mScaleGestureListener
             = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+
+        private float mScale;
+
         public boolean onScale(ScaleGestureDetector detector) {
-            Log.e(TAG, "onScale: " + detector.getScaleFactor());
-            return true;
+            if (mIsTrigging) {
+                mScale *= detector.getScaleFactor();
+                Log.e(TAG, "onScale: " + mScale);
+                return true;
+            } else {
+                return false;
+            }
         }
 
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             Log.e(TAG, "onScaleBegin");
+            mScale = detector.getScaleFactor();
             return true;
         }
 
         public void onScaleEnd(ScaleGestureDetector detector) {
             // Intentionally empty
+            mScale = Float.NaN;
             Log.e(TAG, "onScaleEnd");
         }
     };
