@@ -1,21 +1,96 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.argonmobile.scaletransform.ScaleTransformView
-        android:background="#ccc"
+        android:id="@+id/gesture_view_container"
+        android:background="#283878"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="20dp"
-        android:paddingBottom="40dp"
         app:exampleDimension="24sp"
         app:exampleColor="#33b5e5"
-        app:exampleString="Hello, ScaleTransformView"
+        app:exampleString="Hello, Odin"
         app:exampleDrawable="@android:drawable/ic_menu_add">
+        <View
+            android:id="@+id/background_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#2F3D56"/>
         <Button
+            android:id="@+id/animation_view_1"
+            android:layout_width="450dp"
+            android:layout_height="270dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:text="Profile 1"
+            android:background="@android:color/holo_green_light"/>
+        <Button
+            android:id="@+id/animation_view_2"
+            android:layout_width="450dp"
+            android:layout_height="270dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:text="Profile 2"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/holo_blue_light"/>
+        <Button
+            android:id="@+id/animation_view_3"
+            android:layout_width="270dp"
+            android:layout_height="180dp"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:text="Profile 3"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/holo_orange_dark"/>
+        <Button
+            android:id="@+id/animation_view_4"
+            android:layout_width="270dp"
+            android:layout_height="180dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:text="Profile 4"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@android:color/holo_green_dark"/>
+        <Button
+            android:id="@+id/animation_view_5"
+            android:layout_width="270dp"
+            android:layout_height="180dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="35dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="30dp"
+            android:text="Profile 5"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:background="@android:color/holo_purple"/>
+    </com.argonmobile.scaletransform.ScaleTransformView>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Run"
+            android:id="@+id/startButton"
+            />
+        <SeekBar
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Button"/>
-    </com.argonmobile.scaletransform.ScaleTransformView>
+            android:id="@+id/seekBar"
+            />
+    </LinearLayout>
 </FrameLayout>

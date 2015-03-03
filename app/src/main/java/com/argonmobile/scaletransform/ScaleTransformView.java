@@ -15,9 +15,10 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 
-public class ScaleTransformView extends FrameLayout {
+public class ScaleTransformView extends RelativeLayout {
     private static final String TAG = "ScaleTransformView";
 
     private String mExampleString; // TODO: use a default from R.string...
@@ -32,6 +33,8 @@ public class ScaleTransformView extends FrameLayout {
     private boolean mIsTrigging = false;
 
     private ScaleGestureDetector mScaleGestureDetector;
+
+    private OnScaleListener mOnScaleListener;
 
     public ScaleTransformView(Context context) {
         super(context);
@@ -51,6 +54,10 @@ public class ScaleTransformView extends FrameLayout {
     public ScaleTransformView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         init(attrs, defStyle);
+    }
+
+    public void setOnScaleListener(OnScaleListener scaleListener) {
+        mOnScaleListener = scaleListener;
     }
 
     private void init(AttributeSet attrs, int defStyle) {
@@ -96,7 +103,7 @@ public class ScaleTransformView extends FrameLayout {
     }
 
     private boolean checkGestureTrigger(MotionEvent ev) {
-        if (MotionEventCompat.getPointerCount(ev) >= 2 && MotionEventCompat.getPointerCount(ev) <= 6) {
+        if (MotionEventCompat.getPointerCount(ev) >= 5 && MotionEventCompat.getPointerCount(ev) <= 6) {
             return true;
         } else {
             return false;
@@ -113,7 +120,11 @@ public class ScaleTransformView extends FrameLayout {
         }
 
         boolean retValue = mScaleGestureDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev) || retValue;
+        if (!mIsTrigging) {
+            return super.dispatchTouchEvent(ev) || retValue;
+        } else {
+            return true;
+        }
     }
 
     @Override
@@ -137,11 +148,11 @@ public class ScaleTransformView extends FrameLayout {
                 mTextPaint);
 
         // Draw the example drawable on top of the text.
-        if (mExampleDrawable != null) {
-            mExampleDrawable.setBounds(paddingLeft, paddingTop,
-                    paddingLeft + contentWidth, paddingTop + contentHeight);
-            mExampleDrawable.draw(canvas);
-        }
+//        if (mExampleDrawable != null) {
+//            mExampleDrawable.setBounds(paddingLeft, paddingTop,
+//                    paddingLeft + contentWidth, paddingTop + contentHeight);
+//            mExampleDrawable.draw(canvas);
+//        }
     }
 
     /**
@@ -235,6 +246,9 @@ public class ScaleTransformView extends FrameLayout {
             if (mIsTrigging) {
                 mScale *= detector.getScaleFactor();
                 Log.e(TAG, "onScale: " + mScale);
+                if (mOnScaleListener != null) {
+                    mOnScaleListener.onScale(detector.getScaleFactor());
+                }
                 return true;
             } else {
                 return false;
@@ -242,15 +256,35 @@ public class ScaleTransformView extends FrameLayout {
         }
 
         public boolean onScaleBegin(ScaleGestureDetector detector) {
-            Log.e(TAG, "onScaleBegin");
-            mScale = detector.getScaleFactor();
-            return true;
+            if (mIsTrigging) {
+                Log.e(TAG, "onScaleBegin");
+                mScale = detector.getScaleFactor();
+
+                if (mOnScaleListener != null) {
+                    mOnScaleListener.onScaleBegin();
+                }
+                return true;
+            } else {
+                return true;
+            }
         }
 
         public void onScaleEnd(ScaleGestureDetector detector) {
             // Intentionally empty
-            mScale = Float.NaN;
-            Log.e(TAG, "onScaleEnd");
+            if (mIsTrigging) {
+
+                Log.e(TAG, "onScaleEnd: " + detector.getScaleFactor());
+                mScale = Float.NaN;
+                if (mOnScaleListener != null) {
+                    mOnScaleListener.onScaleEnd();
+                }
+            }
         }
     };
+
+    public interface OnScaleListener {
+        public void onScaleBegin();
+        public void onScale(float scaleFactor);
+        public void onScaleEnd();
+    }
 }
